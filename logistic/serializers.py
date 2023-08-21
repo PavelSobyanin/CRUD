@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from logistic.models import Product, Stock, StockProduct
 
+
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
@@ -21,10 +22,8 @@ class StockSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         positions = validated_data.pop('positions')
         stock = super().create(validated_data)
-        for i in positions:
-            new_stok_product = StockProduct.objects.create(product=i['product'], stock=stock, quantity=i['quantity'],
-                                                           price=i['price'])
-            stock.positions.add(new_stok_product)
+        for position in positions:
+            stock.positions.create(**position)
         return stock
 
     def update(self, instance, validated_data):
